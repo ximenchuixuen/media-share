@@ -12,17 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom'; 
+import { UserContext } from './UserContext';
 import '../css/FileUpload.css';
 
 const FileUploadPage = () => {
+    // 从sessionStorage中获取username和id
+    const userName = sessionStorage.getItem('username');
+    const userid = sessionStorage.getItem('userid');
+    
+
+
+
     const [formData, setFormData] = useState({
-        username: '',
-        userID: '',
+        username: userName,
+        userID: userid,
         filename: '',
         file: null,
     });
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -41,16 +51,37 @@ const FileUploadPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 在这里可以添加上传文件的逻辑
+        // // 创建一个FormData对象，用于存储表单数据
+        // const formData = new FormData();
+        // formData.append('username', userName);
+        // formData.append('userID', userid);
+        // formData.append('filename', filename);
+        // formData.append('file', file);
         console.log(formData);
-        // 清空表单
-        setFormData({
+        // 发起POST请求
+        fetch('http://localhost:3000/api/add', {
+          method: 'POST',
+          body: JSON.stringify(formData),
+          headers: {
+            'Content-Type': 'multipart/form-data' 
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('File uploaded:', data);
+          // 清空表单
+          setFormData({
             username: '',
             userID: '',
             filename: '',
-            file: null,
+            file: null
+          });
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
         });
-    };
+      };
+      
 
     return (
         <div>
@@ -66,8 +97,9 @@ const FileUploadPage = () => {
                         <input
                             type="text"
                             name="username"
-                            value={formData.username}
+                            value={userName}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -75,8 +107,9 @@ const FileUploadPage = () => {
                         <input
                             type="text"
                             name="userID"
-                            value={formData.userID}
+                            value={userid}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -96,7 +129,7 @@ const FileUploadPage = () => {
                             onChange={handleFileChange}
                         />
                     </div>
-                    <button type="submit" className="submit-button">Submit</button>
+                    <button  type="submit" className="submit-button">Submit</button>
                 </form>
             </div>
         </div>

@@ -13,14 +13,21 @@
 // limitations under the License.
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom'; 
 import '../css/FileUpload.css';
 
 const FileEditPage = () => {
+    const location = useLocation();
+    const { editName, EditFileID, EditFileLocator } = location.state || {};
+    const userName = sessionStorage.getItem('username');
+    const userid = sessionStorage.getItem('userid');
+
+    console.log(editName);
     const [formData, setFormData] = useState({
-        username: '',
-        userID: '',
-        filename: '',
+        username: userName,
+        userID: userid,
+        filename: editName,
+        fileLocator: EditFileLocator,
         file: null,
     });
 
@@ -41,16 +48,37 @@ const FileEditPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 在这里可以添加上传文件的逻辑
+        // // 创建一个FormData对象，用于存储表单数据
+        // const formData = new FormData();
+        // formData.append('username', userName);
+        // formData.append('userID', userid);
+        // formData.append('filename', filename);
+        // formData.append('file', file);
         console.log(formData);
-        // 清空表单
-        setFormData({
+        // 发起POST请求
+        fetch('http://localhost:3000/api/edit', {
+          method: 'POST',
+          body: JSON.stringify(formData),
+          headers: {
+            'Content-Type': 'multipart/form-data' 
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('File uploaded:', data);
+          // 清空表单
+          setFormData({
             username: '',
             userID: '',
             filename: '',
-            file: null,
+            fileLocator: '',
+            file: null
+          });
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
         });
-    };
+      };
 
     return (
         <div>
@@ -59,7 +87,7 @@ const FileEditPage = () => {
                 <h1>Edit File</h1>
             </header>
             <div className="container">
-                <h1>File Upload</h1>
+                <h1>File Edit</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Username:</label>

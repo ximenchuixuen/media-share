@@ -5,14 +5,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const userApiRouter = require('./userApi.js');
 const mediaApiRouter = require('./mediaApi.js');
-
+const cors = require('cors');
 const webpack = require('webpack');
-const config = require('../webpack.config');
-const compiler = webpack(config);
+const config = require('../webpack.config.js');
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors()); // 启用CORS中间件
 app.use(express.static(__dirname + '/public'));
 
 
@@ -27,7 +27,7 @@ app.use(express.static(__dirname + '/public'));
 //   }
 //   next();
 // });
-app.use('/login', userApiRouter);
+app.use('/user', userApiRouter);
 
 
 app.use('/api', mediaApiRouter);

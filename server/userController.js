@@ -27,7 +27,7 @@ userController.findUser = (req, res, next) => {
         return next(errorObj)
     } else if (rows.length !==0 ) {
         console.log(rows);
-        return next()
+        return res.status(200).json(rows)
     } else {
       const NOTFOUND = {
         log: 'not found user',

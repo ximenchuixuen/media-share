@@ -9,7 +9,7 @@ import FileUploadPage from './components/UploadFile';
 import FileDetailPage from './components/FileDetail';
 import FileEditPage from './components/FileEdit';
 import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
- 
+import { UserProvider } from './components/UserContext';
 // ReactDOM.render(
 //     <h1>Hello World</h1>,
 //   document.getElementById('root')
@@ -17,6 +17,7 @@ import {BrowserRouter, Route, Routes, Navigate} from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <UserProvider>
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
@@ -34,4 +35,5 @@ root.render(
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
+  </UserProvider>
 );

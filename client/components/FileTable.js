@@ -13,6 +13,8 @@
 // limitations under the License.
 
 import React, { useMemo, useState } from 'react';
+import axios from 'axios';
+
 import { useTable, usePagination } from 'react-table';
 import { useNavigate } from 'react-router-dom';
 import '../css/FileTable.css'
@@ -22,12 +24,33 @@ const FileTable = ({ data }) => {
   // const handleDelete= () => {
   //   navigate('/delete'); // 使用history.push来跳转到上传页面
   // };
-  const handleEdit = () => {
-    navigate('/edit'); // 使用history.push来跳转到上传页面
+  const handleEdit = (data) => {
+     navigate('/edit', { state: {  editName: data.fileName, EditFileID: data.id, EditFileLocator: data.fileLocator}});
   };
-  const handleDetail= () => {
-    navigate('/detail'); // 使用history.push来跳转到上传页面
+  const handleDetail= (data) => {
+    console.log('filename:', data.fileName);
+    navigate('/detail', { state: {  name: data.fileName, fileID: data.id, FileLocator: data.fileLocator}}); // 使用history.push来跳转到上传页面
   };
+  const handleDelete = (id) => {
+    // if (user_id === '' || user_id === null || user_id === undefined) {
+    //   window.location.href = './login.html';
+    //   return;
+    // }
+    axios.post('http://localhost:3000/api/delete', { "Id": id })
+      .then(response => {
+        const res = response.data;
+        if (res.isSuccess === true) {
+          alert("delete success");
+          window.location.reload();
+        }
+      })
+      .catch(error => {
+        // 请求失败执行代码
+        alert(error);
+        return;
+      });
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -56,7 +79,7 @@ const FileTable = ({ data }) => {
           <button className="edit" onClick={() =>  handleEdit(row.original)}>
             edit
           </button>
-          <button className="delete" onClick={() => alert('delete')}>
+          <button className="delete" onClick={() => handleDelete(row.FileLocator)}>
             delete
           </button>
           </div>

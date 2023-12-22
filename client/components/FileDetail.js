@@ -13,15 +13,23 @@
 // limitations under the License.
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom'; 
 import '../css/FileUpload.css';
 
 const FileDetailPage = () => {
+    const location = useLocation();
+    const { name, fileID, FileLocator } = location.state || {};
+
+
+    const userName = sessionStorage.getItem('username');
+    const userid = sessionStorage.getItem('userid');
     const [formData, setFormData] = useState({
-        username: '',
-        userID: '',
-        filename: '',
+        username: userName,
+        userID: userid,
+        fileid: fileID,
+        filename: name,
         file: null,
+        fileLocator: FileLocator
     });
 
     const handleInputChange = (e) => {
@@ -59,7 +67,7 @@ const FileDetailPage = () => {
                 <h1>File Detail</h1>
             </header>
             <div className="container">
-                <h1>File Upload</h1>
+                <h1>File Detail</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Username:</label>
@@ -68,6 +76,7 @@ const FileDetailPage = () => {
                             name="username"
                             value={formData.username}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -77,6 +86,7 @@ const FileDetailPage = () => {
                             name="userID"
                             value={formData.userID}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -86,6 +96,7 @@ const FileDetailPage = () => {
                             name="filename"
                             value={formData.filename}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -95,6 +106,7 @@ const FileDetailPage = () => {
                             name="fileid"
                             value={formData.fileid}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
                     <div className="form-group">
@@ -104,9 +116,9 @@ const FileDetailPage = () => {
                             name="fileLocator"
                             value={formData.fileLocator}
                             onChange={handleInputChange}
+                            readOnly
                         />
                     </div>
-                    <button type="submit" className="submit-button">return</button>
                 </form>
             </div>
         </div>
